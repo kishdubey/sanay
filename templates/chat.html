@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <h1>Welcome! Chat room: {{ room }}</h1>
+    <div id="messages"></div>
+    <form>
+      <input type="text" placeholder="Enter message here">
+      <button type="submit">Send</button>
+    </form>
+  </body>
+  <script src="https://cdnjs.cloudfare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+  <script>
+    const socket = io.connect("https://127.0.0.1:5000")
+  </script>
+</html>
