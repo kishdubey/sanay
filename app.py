@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_socketio import SocketIO
 
+from forms import *
+
 app = Flask(__name__)
 app.secret_key = 'replace later'
 
@@ -8,16 +10,13 @@ socketio = SocketIO(app)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template("index.html")
 
-@app.route('/chat')
-def chat():
-    username = request.args.get('username')
-    room = request.args.get('room')
+    reg_form = RegistriationForm()
+    if reg_form.validate_on_submit():
+        return "Works"
 
-    if username and room:
-        return render_template("chat.html", username=username, room=room)
-    return redirect(url_for('home'))
+    return render_template("index.html", form=reg_form)
+
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
