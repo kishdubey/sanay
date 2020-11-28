@@ -2,10 +2,12 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask_socketio import SocketIO
 
 app = Flask(__name__)
+app.secret_key = 'replace later'
+
 socketio = SocketIO(app)
 
-@app.route('/')
-def home():
+@app.route('/', methods=['GET', 'POST'])
+def index():
     return render_template("index.html")
 
 @app.route('/chat')
