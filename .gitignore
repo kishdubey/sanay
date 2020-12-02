@@ -4,3 +4,5 @@ __pycache__/
 *.pkl
 .ipynb_checkpoints/
 *.w2v
+*.npy
+*.pickle
