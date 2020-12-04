@@ -1,14 +1,13 @@
 {% macro displayField(fieldName, placeholder) %}
 
-<div>
-  {{ fieldName(class_='form-control',
-     placeholder=placeholderValue, autocomplete='off',
-     autofocus=true)}}
+  <div>
+    {{ fieldName(class_='form-control', placeholder=placeholder, **kwargs) }}
+    <!-- Error messages -->
+    <ul>
+      {% for error in fieldName.errors %}
+        <li>{{ error }}</li>
+      {% endfor %}
+    </ul>
+  </div>
 
-  <ul>
-    {% for error in form.username.errors %}
-      <li>{{ error }}</li>
-    {% endfor %}
-  </ul>
-
-</div>
+{% endmacro %}
