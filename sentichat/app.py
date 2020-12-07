@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
-from flask_socketio import SocketIO, send
+from flask_socketio import SocketIO, send, emit
 from forms import *
 from models import *
 
@@ -65,7 +65,6 @@ def logout():
 
 @socketio.on('message')
 def message(data):
-    print(f"\n\n{data}\n\n")
     send(data)
 
 if __name__ == '__main__':
