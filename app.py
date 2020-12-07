@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 
 from forms import *
@@ -30,6 +30,8 @@ def index():
         db.session.add(user)
         db.session.commit()
 
+        flash('Registered succesfully. Please login.', 'success')
+
         return redirect(url_for('login'))
 
     return render_template("index.html", form=reg_form)
@@ -48,13 +50,15 @@ def login():
 @app.route("/chat", methods=['GET', 'POST'])
 def chat():
     if not current_user.is_authenticated:
-        return "Please login before chatting"
+        flash('Please login', 'danger')
+        return redirect(url_for('login'))
     return "chat"
 
 @app.route("/logout", methods=['GET'])
 def logout():
     logout_user()
-    return "Logged out"
+    flash('Logged Out succesfully', 'success')
+    return redirect(url_for('login'))
 
 if __name__ == '__main__':
     app.run(debug=True)
