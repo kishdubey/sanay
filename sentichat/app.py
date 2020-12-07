@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
-from flask_scoketio import SocketIO, send
+from flask_socketio import SocketIO, send
 from forms import *
 from models import *
 
@@ -51,10 +51,11 @@ def login():
 
 @app.route("/chat", methods=['GET', 'POST'])
 def chat():
-    if not current_user.is_authenticated:
-        flash('Please login', 'danger')
-        return redirect(url_for('login'))
-    return "chat"
+    # if not current_user.is_authenticated:
+    #     flash('Please login', 'danger')
+    #     return redirect(url_for('login'))
+
+    return render_template('chat.html')
 
 @app.route("/logout", methods=['GET'])
 def logout():
@@ -68,4 +69,4 @@ def message(data):
     send(data)
 
 if __name__ == '__main__':
-    socket.io.run(app, debug=True)
+    socketio.run(app, debug=True)
