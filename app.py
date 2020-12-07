@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
+
 from forms import *
 from models import *
 
@@ -15,7 +16,7 @@ def index():
 
     if reg_form.validate_on_submit():
         username = reg_form.username.data
-        password = reg_form.password.data
+        password = sha256.hash(reg_form.password.data)
 
         user = User(username=username, password=password)
         db.session.add(user)
