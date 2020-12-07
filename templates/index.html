@@ -10,8 +10,8 @@
            {{ displayField(form.username, 'Username', autocomplete="off", autofocus=true) }}
            {{ displayField(form.password, 'Password') }}
            {{ displayField(form.confirm_pswd, 'Retype Password') }}
-           <div class="form-group">
-               <input type="submit" value="Create" class="btn btn-warning">
+           <div>
+               {{ form.submit_button }}
            </div>
            <!-- Protecting from CSRF attack -->
            {{ form.csrf_token }}

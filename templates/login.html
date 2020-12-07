@@ -1,0 +1,20 @@
+{% from 'formMacro.html' import displayField %}
+{% extends 'base.html' %}
+
+{% block title %}Login {% endblock %}
+
+{% block body %}
+  <h2>Login</h2>
+  <p>Enter username and password to chat</p>
+
+  <form action="{{ url_for('login')}}" method="POST">
+    {{ displayField(form.username, 'Username', autocomplete="off", autofocus=true) }}
+    {{ displayField(form.password, 'Password') }}
+    <div>
+      {{ form.submit_button }}
+    </div>
+    <!-- Protecting from CSRF attack -->
+    {{ form.csrf_token }}
+  </form>
+
+{% endblock %}
