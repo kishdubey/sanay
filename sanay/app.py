@@ -12,6 +12,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://kfhbafarwjdqwa:f0d2463f7c659
 db = SQLAlchemy(app)
 
 socketio = SocketIO(app)
+ROOMS = ["lounge", "news", "games", "coding"]
 
 login = LoginManager(app)
 login.init_app(app)
@@ -56,7 +57,7 @@ def chat():
     #     flash('Please login', 'danger')
     #     return redirect(url_for('login'))
 
-    return render_template('chat.html', username=current_user.username)
+    return render_template('chat.html', username=current_user.username, rooms=ROOMS)
 
 @app.route("/logout", methods=['GET'])
 def logout():
@@ -67,7 +68,7 @@ def logout():
 @socketio.on('message')
 def message(data):
     send({'msg': data['msg'], 'username': data['username'],
-          'time_stamp': strftime('%b-%d %I:%M%p', localtime())})
+          'time_stamp': strftime('%b-%d %I:%M%p', localtime())}, room=data['room'])
 
 @socketio.on('join')
 def join(data):
@@ -75,9 +76,9 @@ def join(data):
     send({'msg': data['username'] + "has joined the " + data['room'] + "room."}, room=data['room'])
 
 @socketio.on('leave')
-    def leave(data):
-        leave_room(data['room'])
-        send({'msg': data['username'] + "has left the " + data['room'] + "room."}, room=data['room'])
+def leave(data):
+    leave_room(data['room'])
+    send({'msg': data['username'] + "has left the " + data['room'] + "room."}, room=data['room'])
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
