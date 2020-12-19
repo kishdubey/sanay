@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Send Message
   document.querySelector('#send-message').onclick = () => {
     socket.send({'msg': document.querySelector('#user-message').value,
-                'username': username, 'room': room});
+            'username': username, 'room': room});
   }
 
   // Room Selection
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     p.onclick = () => {
       let newRoom = p.innerHTML;
       if (newRoom == room) {
-        msg = `You are already in ${room} room.`
+        msg = `You are already in ${room} room.`;
         printSysMsg(msg);
       }
       else {
