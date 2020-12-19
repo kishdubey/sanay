@@ -1,9 +1,15 @@
-from time import localtime, strftime
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from flask_socketio import SocketIO, send, emit, join_room, leave_room
 from forms import *
 from models import *
+
+from time import localtime, strftime
+
+import pickle
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 app = Flask(__name__)
 app.secret_key = 'replace later'
@@ -67,8 +73,8 @@ def logout():
 
 @socketio.on('message')
 def message(data):
-    send({'msg': data['msg'], 'username': data['username'], 'time_stamp': strftime('%b-%d %I:%M%p', localtime())}, room=data['room'])
-
+    prediction = predict(data['msg'])
+    send({'msg': data['msg'], 'username': data['username'], 'time_stamp': strftime('%b-%d %I:%M%p', localtime()), 'prediction': prediction}, room=data['room'])
 @socketio.on('join')
 def join(data):
     join_room(data['room'])
@@ -78,6 +84,22 @@ def join(data):
 def leave(data):
     leave_room(data['room'])
     send({'msg': data['username'] + "has left the " + data['room'] + " room."}, room=data['room'])
+
+def predict(message):
+    model=load_model('keras_model/model.h5')
+    with open('keras_model/tokenizer.pickle', 'rb') as handle:
+        tokenizer = pickle.load(handle)
+    x_1 = tokenizer.texts_to_sequences([message])
+    x_1 = pad_sequences(x_1, maxlen=300)
+    prediction = model.predict(x_1)[0][0]
+
+    if prediction >= 0.6:
+        return "Positive", round(prediction*100, 2)
+
+    elif prediction <= 0.4:
+        return "Negative", round(prediction*100, 2)
+
+    return -1
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
