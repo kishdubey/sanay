@@ -14,7 +14,7 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 app = Flask(__name__)
 app.secret_key = 'replace later'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://kfhbafarwjdqwa:f0d2463f7c659badd77f5ce43bbbf97c1035ea8c3fe11c54e9b012f45b8f79b6@ec2-54-225-214-37.compute-1.amazonaws.com:5432/da5tto5evlsm28'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'YOUR URI'
 db = SQLAlchemy(app)
 
 login = LoginManager(app)
@@ -80,7 +80,7 @@ def message(data):
     room = data['room']
     time_stamp = strftime('%b-%d %I:%M%p', localtime())
     prediction = predict(msg)
-    
+
     send({'msg': msg, 'username': username, 'time_stamp': time_stamp, 'prediction': prediction}, room=room)
 
 @socketio.on('join')
