@@ -17,15 +17,15 @@ app.secret_key = 'replace later'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://kfhbafarwjdqwa:f0d2463f7c659badd77f5ce43bbbf97c1035ea8c3fe11c54e9b012f45b8f79b6@ec2-54-225-214-37.compute-1.amazonaws.com:5432/da5tto5evlsm28'
 db = SQLAlchemy(app)
 
-socketio = SocketIO(app)
-ROOMS = ["lounge", "news", "games", "coding"]
-
 login = LoginManager(app)
 login.init_app(app)
 
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
+
+socketio = SocketIO(app)
+ROOMS = ["coding", "memes", "games", "animals"]
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -63,9 +63,9 @@ def logout():
 
 @app.route("/chat", methods=['GET', 'POST'])
 def chat():
-     if not current_user.is_authenticated:
-         flash('Please login', 'danger')
-         return redirect(url_for('login'))
+    if not current_user.is_authenticated:
+        flash('Please login', 'danger')
+        return redirect(url_for('login'))
 
     return render_template('chat.html', username=current_user.username, rooms=ROOMS)
 
@@ -107,12 +107,12 @@ def predict(message):
     prediction = model.predict(x_1)[0][0]
 
     if prediction >= 0.6:
-        return "Positive", round(prediction*100, 2)
+        return round(prediction*100, 2)
 
     elif prediction <= 0.4:
-        return "Negative", 100-round(prediction*100, 2)
+        return -(100-round(prediction*100, 2))
 
-    return "Neutral"
+    return 0
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)

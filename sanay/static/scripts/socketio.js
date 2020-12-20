@@ -2,20 +2,36 @@ document.addEventListener('DOMContentLoaded', () => {
   // Connect to websocket
   var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
 
-  let room = "Lounge";
-  joinRoom("Lounge");
+  let room = "Coding";
+  joinRoom("Coding");
 
   // Incoming message
   socket.on('message', data => {
     const p = document.createElement('p');
     const span_username = document.createElement('span');
     const span_timestamp = document.createElement('span');
+    const predict = document.createElement('span')
     const br = document.createElement('br');
 
     if (data.username) {
       span_username.innerHTML = data.username;
       span_timestamp.innerHTML = data.time_stamp;
-      p.innerHTML = span_username.outerHTML + br.outerHTML + data.msg + br.outerHTML + span_timestamp.outerHTML + br.outerHTML + data.prediction;
+      predict.innerHTML = "";
+
+      // setting prediction color
+      let color = "black";
+      if (data.prediction > 0){
+        color = "green";
+        predict.innerHTML = data.prediction+"%";
+
+      }
+      else if (data.prediction < 0){
+        color = "red";
+        predict.innerHTML = data.prediction*-1+"%";
+      }
+
+      predict.style.color = color;
+      p.innerHTML = span_username.outerHTML + br.outerHTML + data.msg + br.outerHTML + span_timestamp.outerHTML + br.outerHTML + predict.outerHTML;
       document.querySelector('#display-message-section').append(p);
     }
     else {

@@ -1,19 +1,22 @@
 {% from 'formMacro.html' import displayField %}
 {% extends 'base.html' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Register {% endblock %}
 
 {% block body %}
   <h1>Get started</h1>
+  <p>First time here? Register to start using Sanay</p>
 
   <form action="{{ url_for('index') }}", method="POST">
            {{ displayField(form.username, 'Username', autocomplete="off", autofocus=true) }}
            {{ displayField(form.password, 'Password') }}
            {{ displayField(form.confirm_pswd, 'Retype Password') }}
-           <div>
-               {{ form.submit_button }}
+           <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-warning">
            </div>
-           <!-- Protecting from CSRF attack -->
            {{ form.csrf_token }}
        </form>
+
+  <hr>
+  <p>Already registered? <a href={{url_for('login')}}>Login here</a>.</p>
 {% endblock %}
