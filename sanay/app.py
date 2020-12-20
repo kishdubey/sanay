@@ -97,7 +97,7 @@ def predict(message):
         return "Positive", round(prediction*100, 2)
 
     elif prediction <= 0.4:
-        return "Negative", round(prediction*100, 2)
+        return "Negative", 100-round(prediction*100, 2)
 
     return -1
 
