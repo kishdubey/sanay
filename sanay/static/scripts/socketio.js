@@ -7,8 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
   joinRoom("Coding");
 
   // Send messages
-  document.querySelector('#send_message').onclick = () => {
-      socket.emit('incoming-msg', {'msg': document.querySelector('#user-message').value,
+  document.querySelector('#send-message').onclick = () => {
+      socket.send({'msg': document.querySelector('#user-message').value,
         'username': username, 'room': room});
 
       // clear
@@ -35,22 +35,28 @@ document.addEventListener('DOMContentLoaded', () => {
         span_timestamp.setAttribute("class", "timestamp");
         span_timestamp.innerText = data.time_stamp;
 
+        
         predict.innerHTML = "";
 
         // setting prediction color
         let color = "black";
         if (data.prediction > 0){
           color = "green";
-          predict.innerHTML = data.prediction+"%";
+          predict.innerHTML = "Positive, "+data.prediction+"%";
 
         }
         else if (data.prediction < 0){
           color = "red";
-          predict.innerHTML = data.prediction*-1+"%";
+          predict.innerHTML = "Negative, "+data.prediction*-1+"%";
+        }
+        else {
+          predict.innerHTML = "Neutral";
         }
 
         predict.style.color = color;
         p.innerHTML += span_username.outerHTML + br.outerHTML + data.msg + br.outerHTML + span_timestamp.outerHTML + br.outerHTML + predict.outerHTML;
+
+        console.log("here");
 
         document.querySelector('#display-message-section').append(p);
       }
@@ -71,17 +77,21 @@ document.addEventListener('DOMContentLoaded', () => {
         let color = "black";
         if (data.prediction > 0){
           color = "green";
-          predict.innerHTML = data.prediction+"%";
+          predict.innerHTML = "Positive, "+data.prediction+"%";
         }
         else if (data.prediction < 0){
           color = "red";
-          predict.innerHTML = data.prediction*-1+"%";
+          predict.innerHTML = "Negative, "+data.prediction*-1+"%";
+        }
+        else {
+          predict.innerHTML = "Neutral";
         }
 
         predict.style.color = color;
         p.innerHTML += span_username.outerHTML + br.outerHTML + data.msg + br.outerHTML + span_timestamp.outerHTML + br.outerHTML + predict.outerHTML;
 
         document.querySelector('#display-message-section').append(p);
+        console.log("done");
       }
       else {
         printSysMsg(data.msg);
@@ -144,6 +154,6 @@ document.addEventListener('DOMContentLoaded', () => {
         scrollDownChatWindow()
 
         // Autofocus on text box
-        document.querySelector("#user_message").focus();
+        document.querySelector("#user-message").focus();
     }
 });

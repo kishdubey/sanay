@@ -79,7 +79,8 @@ def message(data):
     username = data['username']
     room = data['room']
     time_stamp = strftime('%b-%d %I:%M%p', localtime())
-    prediction = predict(data['msg'])
+    prediction = predict(msg)
+    
     send({'msg': msg, 'username': username, 'time_stamp': time_stamp, 'prediction': prediction}, room=room)
 
 @socketio.on('join')
