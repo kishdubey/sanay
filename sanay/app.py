@@ -29,7 +29,6 @@ def load_user(id):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-
     reg_form = RegistrationForm()
 
     if reg_form.validate_on_submit():
@@ -41,7 +40,6 @@ def index():
         db.session.commit()
 
         flash('Registered succesfully. Please login.', 'success')
-
         return redirect(url_for('login'))
 
     return render_template("index.html", form=reg_form)
@@ -57,33 +55,48 @@ def login():
 
     return render_template("login.html", form=login_form)
 
-@app.route("/chat", methods=['GET', 'POST'])
-def chat():
-    # if not current_user.is_authenticated:
-    #     flash('Please login', 'danger')
-    #     return redirect(url_for('login'))
-
-    return render_template('chat.html', username=current_user.username, rooms=ROOMS)
-
 @app.route("/logout", methods=['GET'])
 def logout():
     logout_user()
     flash('Logged Out succesfully', 'success')
     return redirect(url_for('login'))
 
+@app.route("/chat", methods=['GET', 'POST'])
+def chat():
+     if not current_user.is_authenticated:
+         flash('Please login', 'danger')
+         return redirect(url_for('login'))
+
+    return render_template('chat.html', username=current_user.username, rooms=ROOMS)
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
 @socketio.on('message')
 def message(data):
+    msg = data['msg']
+    username = data['username']
+    room = data['room']
+    time_stamp = strftime('%b-%d %I:%M%p', localtime())
     prediction = predict(data['msg'])
-    send({'msg': data['msg'], 'username': data['username'], 'time_stamp': strftime('%b-%d %I:%M%p', localtime()), 'prediction': prediction}, room=data['room'])
+    send({'msg': msg, 'username': username, 'time_stamp': time_stamp, 'prediction': prediction}, room=room)
+
 @socketio.on('join')
 def join(data):
-    join_room(data['room'])
-    send({'msg': data['username'] + "has joined the " + data['room'] + " room."}, room=data['room'])
+    username = data['username']
+    room = data['room']
+    join_room(room)
+
+    send({"msg": username + " has joined the " + room + " room."}, room=room)
 
 @socketio.on('leave')
 def leave(data):
-    leave_room(data['room'])
-    send({'msg': data['username'] + "has left the " + data['room'] + " room."}, room=data['room'])
+    username = data['username']
+    room = data['room']
+    leave_room(room)
+
+    send({"msg": username + " has left the room"}, room=room)
 
 def predict(message):
     model=load_model('keras_model/model.h5')
@@ -99,7 +112,7 @@ def predict(message):
     elif prediction <= 0.4:
         return "Negative", 100-round(prediction*100, 2)
 
-    return -1
+    return "Neutral"
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
