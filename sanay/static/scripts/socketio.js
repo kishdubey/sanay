@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         span_timestamp.setAttribute("class", "timestamp");
         span_timestamp.innerText = data.time_stamp;
 
-        
+        predict.setAttribute("class", "timestamp");
         predict.innerHTML = "";
 
         // setting prediction color
@@ -71,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
         span_timestamp.setAttribute("class", "timestamp");
         span_timestamp.innerText = data.time_stamp;
 
+        predict.setAttribute("class", "timestamp");
         predict.innerHTML = "";
 
         // setting prediction color
