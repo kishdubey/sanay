@@ -28,6 +28,7 @@ This is an example of how to list things you need to use the software and how to
 1. Clone the repo
    ```sh
    git clone https://github.com/kishdubey/sanay
+   cd sanay/sanay
    ```
 2. Install packages
    ```sh
@@ -41,9 +42,6 @@ This is an example of how to list things you need to use the software and how to
    ```python
    python3 app.py
    ```
-
-
-
 
 <!-- USAGE EXAMPLES -->
 ## Usage
