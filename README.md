@@ -7,10 +7,11 @@
 ## About The Project
 
 [![Sanay][product-screenshot]](https://example.com)
+
 Sanay, is a web-based chat application that provides social cues for those that find it difficult through sentiment analysis. The LSTM Keras Model has been trained on a dataset of 1.6 M tweets, achieving a 78.95% sentiment classification accuracy.
 
-Play around with the model [here](https://github.com/kishdubey/sanay-streamlit).
-Check out the notebook for the model [here](https://github.com/kishdubey/sanay/blob/master/sanay/keras_model/sanay_sentiment_analysis.ipynb).
+- Play around with the model [here](https://github.com/kishdubey/sanay-streamlit).
+- Check out the notebook for the model [here](https://github.com/kishdubey/sanay/blob/master/sanay/keras_model/sanay_sentiment_analysis.ipynb).
 
 video-based chat application with sentiment analysis coming soon!
 <!-- GETTING STARTED -->
