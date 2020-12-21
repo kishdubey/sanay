@@ -17,6 +17,7 @@ def invalid_credentials(form, field):
         raise ValidationError("Wrong Password!")
 
 class RegistrationForm(FlaskForm):
+    """Registration Form"""
     username = StringField('username_label',
         validators=[InputRequired(message="Username Required"),
         Length(min=4, max=25, message="Between 4 and 25 characters")])
@@ -37,6 +38,7 @@ class RegistrationForm(FlaskForm):
             raise ValidationError("Username already exists!")
 
 class LoginForm(FlaskForm):
+    """Login Form"""
     username = StringField('username_label', validators=[InputRequired(message="Username Required")])
     password = PasswordField('password_label', validators=[InputRequired(message="Password Required"), invalid_credentials])
     submit_button = SubmitField('Login')

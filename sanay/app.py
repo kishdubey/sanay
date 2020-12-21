@@ -11,12 +11,15 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
+# Initiate App
 app = Flask(__name__)
-app.secret_key = 'replace later'
+app.secret_key = 'REPLACE LATER'
 
+# Setting up SQL database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'YOUR URI'
 db = SQLAlchemy(app)
 
+# Login Manager to handle user handling
 login = LoginManager(app)
 login.init_app(app)
 
@@ -24,11 +27,15 @@ login.init_app(app)
 def load_user(id):
     return User.query.get(int(id))
 
+# Web Sockets for messaging
 socketio = SocketIO(app)
+
+# Default rooms
 ROOMS = ["coding", "memes", "games", "animals"]
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    """Registration Page"""
     reg_form = RegistrationForm()
 
     if reg_form.validate_on_submit():
@@ -46,6 +53,7 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """Login Page"""
     login_form = LoginForm()
 
     if login_form.validate_on_submit():
@@ -57,12 +65,15 @@ def login():
 
 @app.route("/logout", methods=['GET'])
 def logout():
+    """Logout Page, Redirects to Login"""
     logout_user()
     flash('Logged Out succesfully', 'success')
     return redirect(url_for('login'))
 
 @app.route("/chat", methods=['GET', 'POST'])
 def chat():
+    """Chat Page"""
+    # if user is not authenticated
     if not current_user.is_authenticated:
         flash('Please login', 'danger')
         return redirect(url_for('login'))
@@ -71,10 +82,12 @@ def chat():
 
 @app.errorhandler(404)
 def page_not_found(e):
+    """If page not found"""
     return render_template('error.html'), 404
 
 @socketio.on('message')
 def message(data):
+    """Sending Message to Client"""
     msg = data['msg']
     username = data['username']
     room = data['room']
@@ -85,6 +98,7 @@ def message(data):
 
 @socketio.on('join')
 def join(data):
+    """Joining Room"""
     username = data['username']
     room = data['room']
     join_room(room)
@@ -93,6 +107,7 @@ def join(data):
 
 @socketio.on('leave')
 def leave(data):
+    """Leaving Room"""
     username = data['username']
     room = data['room']
     leave_room(room)
@@ -100,9 +115,15 @@ def leave(data):
     send({"msg": username + " has left the room"}, room=room)
 
 def predict(message):
+    """
+    (String) -> Float
+    Predicting the sentiment of inputted text
+    """
     model=load_model('keras_model/model.h5')
     with open('keras_model/tokenizer.pickle', 'rb') as handle:
         tokenizer = pickle.load(handle)
+
+    # preparing text to be predicted
     x_1 = tokenizer.texts_to_sequences([message])
     x_1 = pad_sequences(x_1, maxlen=300)
     prediction = model.predict(x_1)[0][0]
