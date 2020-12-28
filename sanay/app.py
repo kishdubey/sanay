@@ -120,7 +120,7 @@ def predict(text):
     with open('sentiment_prediction_model/BNBmodel.pickle', 'rb') as handle:
         model = pickle.load(handle)
 
-    preprocessed_text = vectorizer.transform(text)
+    preprocessed_text = vectorizer.transform([text])
     sentiment = model.predict_proba(preprocessed_text)[0]
 
     if sentiment[0] > sentiment[1]:

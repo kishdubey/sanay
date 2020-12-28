@@ -49,9 +49,6 @@ document.addEventListener('DOMContentLoaded', () => {
           color = "red";
           predict.innerHTML = "Negative, "+data.prediction*-1+"%";
         }
-        else {
-          predict.innerHTML = "Neutral";
-        }
 
         predict.style.color = color;
         p.innerHTML += span_username.outerHTML + br.outerHTML + data.msg + br.outerHTML + span_timestamp.outerHTML + br.outerHTML + predict.outerHTML;
@@ -83,10 +80,6 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (data.prediction < 0){
           color = "red";
           predict.innerHTML = "Negative, "+data.prediction*-1+"%";
-        }
-        else {
-          predict.innerHTML = "Neutral";
-        }
 
         predict.style.color = color;
         p.innerHTML += span_username.outerHTML + br.outerHTML + data.msg + br.outerHTML + span_timestamp.outerHTML + br.outerHTML + predict.outerHTML;
