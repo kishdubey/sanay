@@ -14,10 +14,10 @@ from sklearn.naive_bayes import BernoulliNB
 
 # Initiate App
 app = Flask(__name__)
-app.secret_key = os.environ.get('SECRET')
+app.secret_key = os.environ.get('DATABASE_URL')#"REPLACE LATER"
 
 # Setting up SQL database
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')#"postgres://nncvoppgjbabzc:8ec76d75995a80eded46523d2f6791cca9ba39588d718b07d529c9a4521a357e@ec2-54-235-158-17.compute-1.amazonaws.com:5432/d715n847h5b57j"
 db = SQLAlchemy(app)
 
 # Login Manager to handle user handling
@@ -130,4 +130,4 @@ def predict(text):
     return f"{round(sentiment[1]*100, 2)}"
 
 if __name__ == '__main__':
-    app.run()
+    socketio.run(app, debug=True)
