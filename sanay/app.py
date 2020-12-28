@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from flask_socketio import SocketIO, send, emit, join_room, leave_room
@@ -12,10 +14,10 @@ from sklearn.naive_bayes import BernoulliNB
 
 # Initiate App
 app = Flask(__name__)
-app.secret_key = 'REPLACE LATER'
+app.secret_key = os.environ.get('SECRET')
 
 # Setting up SQL database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://kfhbafarwjdqwa:f0d2463f7c659badd77f5ce43bbbf97c1035ea8c3fe11c54e9b012f45b8f79b6@ec2-54-225-214-37.compute-1.amazonaws.com:5432/da5tto5evlsm28'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 db = SQLAlchemy(app)
 
 # Login Manager to handle user handling
@@ -128,4 +130,4 @@ def predict(text):
     return f"{round(sentiment[1]*100, 2)}"
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    app.run()
