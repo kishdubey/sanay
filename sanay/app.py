@@ -92,7 +92,7 @@ def message(data):
     username = data['username']
     room = data['room']
     time_stamp = strftime('%b-%d %I:%M%p', localtime())
-    prediction = predict(msg)
+    prediction = _predict(msg)
 
     send({'msg': msg, 'username': username, 'time_stamp': time_stamp, 'prediction': prediction}, room=room)
 
@@ -114,7 +114,7 @@ def leave(data):
 
     send({"msg": username + " has left the room"}, room=room)
 
-def predict(message):
+def _predict(message):
     """
     (String) -> Float
     Predicting the sentiment of inputted text
