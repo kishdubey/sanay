@@ -7,16 +7,15 @@ from models import *
 from time import localtime, strftime
 
 import pickle
-from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing.text import Tokenizer
-from tensorflow.keras.preprocessing.sequence import pad_sequences
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.naive_bayes import BernoulliNB
 
 # Initiate App
 app = Flask(__name__)
 app.secret_key = 'REPLACE LATER'
 
 # Setting up SQL database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'YOUR URI'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://kfhbafarwjdqwa:f0d2463f7c659badd77f5ce43bbbf97c1035ea8c3fe11c54e9b012f45b8f79b6@ec2-54-225-214-37.compute-1.amazonaws.com:5432/da5tto5evlsm28'
 db = SQLAlchemy(app)
 
 # Login Manager to handle user handling
@@ -92,7 +91,7 @@ def message(data):
     username = data['username']
     room = data['room']
     time_stamp = strftime('%b-%d %I:%M%p', localtime())
-    prediction = _predict(msg)
+    prediction = predict(msg)
 
     send({'msg': msg, 'username': username, 'time_stamp': time_stamp, 'prediction': prediction}, room=room)
 
@@ -114,27 +113,19 @@ def leave(data):
 
     send({"msg": username + " has left the room"}, room=room)
 
-def _predict(message):
-    """
-    (String) -> Float
-    Predicting the sentiment of inputted text
-    """
-    model=load_model('keras_model/model.h5')
-    with open('keras_model/tokenizer.pickle', 'rb') as handle:
-        tokenizer = pickle.load(handle)
+def predict(text):
+    with open('sentiment_prediction_model/vectorizer.pickle', 'rb') as handle:
+        vectorizer = pickle.load(handle)
 
-    # preparing text to be predicted
-    x_1 = tokenizer.texts_to_sequences([message])
-    x_1 = pad_sequences(x_1, maxlen=300)
-    prediction = model.predict(x_1)[0][0]
+    with open('sentiment_prediction_model/BNBmodel.pickle', 'rb') as handle:
+        model = pickle.load(handle)
 
-    if prediction >= 0.6:
-        return round(prediction*100, 2)
+    preprocessed_text = vectorizer.transform(text)
+    sentiment = model.predict_proba(preprocessed_text)[0]
 
-    elif prediction <= 0.4:
-        return -(100-round(prediction*100, 2))
-
-    return 0
+    if sentiment[0] > sentiment[1]:
+        return f"-{round(sentiment[0]*100, 2)}"
+    return f"{round(sentiment[1]*100, 2)}"
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
